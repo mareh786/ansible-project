@@ -1,0 +1,20 @@
+---
+- name: Base Setup for All
+  hosts: all
+  roles:
+    - role: common
+      tags: common
+
+- name: Configure web servers
+  hosts: webservers
+  roles:
+    - role: nginx
+      tags: nginx
+    - role: app
+      tags: app
+
+- name: Configure Master machine
+  hosts: masterservers
+  roles:
+    - role: database
+      tags: database
