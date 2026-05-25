@@ -1,0 +1,17 @@
+[Unit]
+Description=Flask Application
+After=network.target
+
+[Service]
+User=appuser
+Group=www-data
+WorkingDirectory=/opt/myapp
+Environment="PATH=/opt/myapp/venv/bin"
+ExecStart=/opt/myapp/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 app:app
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+
