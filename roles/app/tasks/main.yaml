@@ -17,6 +17,17 @@
     mode: '0755'
   tags: app
 
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+    - git
+    - python3-venv
+    - python3-pip
+    state: present
+    update_cache: yes
+  become: yes
+  tags: app
+
 - name: Deploy application from Git
   ansible.builtin.git:
     repo: https://github.com/mareh786/snake-app.git   
@@ -53,11 +64,8 @@
     mode: '0644'
   notify: Restart myapp service
   tags: app
-
-- name: Enable and start myapp service
-  ansible.builtin.systemd:
-    name: myapp
-    enabled: yes
-    state: started
-    daemon_reload: yes
-  tags: app
+- name: Start app if not running
+  ansible.builtin.shell: |
+    pgrep -f "app.py" || nohup /opt/myapp/venv/bin/python app.py > /opt/myapp/app.log 2>&1 &
+  args:
+    chdir: /opt/myapp
